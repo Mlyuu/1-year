@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ครบรอบ 1 ปี</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --rose: #b5445a; --rose-light: #f7dde3;
+  --gold: #c9933a; --cream: #faf7f2;
+  --dark: #2a1a1f; --muted: #7a5c65;
+  --border: rgba(181,68,90,0.2);
+}
+body { font-family: 'Sarabun', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; overflow-x: hidden; }
+
+/* PETALS */
+.petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.petal { position: absolute; border-radius: 50% 0 50% 0; opacity: 0; animation: fall linear infinite; }
+@keyframes fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.5; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(100vh) rotate(540deg) translateX(30px); opacity: 0; }
+}
+
+/* HERO */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 3rem 2rem; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(181,68,90,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(201,147,58,0.07) 0%, transparent 70%);
+}
+.badge { display: inline-block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold); padding: 0.4rem 1.2rem; border-radius: 2rem; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards; }
+.big-number { font-family: 'Playfair Display', serif; font-size: clamp(7rem, 20vw, 14rem); font-weight: 700; line-height: 0.85; color: transparent; -webkit-text-stroke: 2px var(--rose); position: relative; opacity: 0; animation: fadeUp 1s ease 0.5s forwards; user-select: none; }
+.big-number span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -48%); font-size: clamp(1.2rem, 4vw, 2rem); font-style: italic; font-weight: 400; -webkit-text-stroke: 0; color: var(--rose); }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 400; margin-top: 1rem; opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards; }
+.hero-title em { font-style: italic; color: var(--rose); }
+.hero-sub { font-size: 1rem; color: var(--muted); margin-top: 1rem; font-weight: 300; opacity: 0; animation: fadeUp 0.8s ease 0.9s forwards; }
+.scroll-hint { margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.1em; opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards; }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, var(--rose)); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.2)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+/* SECTION */
+.section { max-width: 800px; margin: 0 auto; padding: 5rem 2rem; }
+.section-label { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.75rem; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 400; margin-bottom: 3rem; }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 2.5rem; }
+.timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--rose), transparent); }
+.tl-item { position: relative; margin-bottom: 2.5rem; opacity: 0; transform: translateX(-16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.tl-item.visible { opacity: 1; transform: translateX(0); }
+.tl-dot { position: absolute; left: -2.95rem; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--rose); border: 2px solid var(--cream); box-shadow: 0 0 0 2px var(--rose); }
+.tl-month { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.25rem; }
+.tl-text { font-size: 1rem; line-height: 1.6; }
+
+/* COUNTER */
+.counter-section { background: var(--dark); color: var(--cream); text-align: center; padding: 5rem 2rem; }
+.counter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 2rem; max-width: 700px; margin: 3rem auto 0; }
+.counter-card { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.counter-card.visible { opacity: 1; transform: translateY(0); }
+.counter-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--rose); line-height: 1; }
+.counter-label { font-size: 0.85rem; color: rgba(250,247,242,0.45); margin-top: 0.5rem; letter-spacing: 0.1em; }
+
+/* WISHES SECTION */
+.wishes-section { padding: 5rem 2rem; background: white; }
+.wishes-inner { max-width: 860px; margin: 0 auto; }
+.wishes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.25rem; }
+.wish-card {
+  background: var(--cream); border: 1px solid var(--border); border-radius: 1rem;
+  padding: 1.5rem; position: relative; overflow: hidden;
+  opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.wish-card.visible { opacity: 1; transform: translateY(0); }
+.wish-card::before { content: '\201C'; position: absolute; top: -0.3rem; left: 0.9rem; font-family: 'Playfair Display', serif; font-size: 5rem; color: var(--rose-light); line-height: 1; pointer-events: none; }
+.wish-emoji { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+.wish-text { font-size: 0.93rem; line-height: 1.7; color: var(--dark); margin-bottom: 1rem; position: relative; }
+.wish-from { display: flex; align-items: center; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+.wish-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--rose-light); color: var(--rose); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 600; flex-shrink: 0; }
+.wish-name { font-size: 0.82rem; font-weight: 500; }
+.wish-relation { font-size: 0.72rem; color: var(--gold); margin-left: auto; }
+
+/* FLOATING BUTTONS */
+.float-btns { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 0.65rem; z-index: 100; }
+.float-btn { display: flex; align-items: center; gap: 0.5rem; font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 500; padding: 0.75rem 1.3rem; border: none; border-radius: 2rem; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,0.14); transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap; }
+.float-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+.float-btn:active { transform: scale(0.96); }
+.float-btn-prize { background: var(--gold); color: white; }
+.float-btn-love { background: var(--rose); color: white; }
+
+/* MUSIC BUTTON */
+.music-btn {
+  position: fixed; bottom: 2rem; left: 2rem; z-index: 100;
+  width: 46px; height: 46px; border-radius: 50%; border: none;
+  background: white; color: var(--rose);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+  cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+}
+.music-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+.music-btn.playing { background: var(--rose); color: white; }
+.music-btn .music-bars {
+  display: flex; align-items: flex-end; gap: 2px; height: 16px;
+}
+.music-btn .bar {
+  width: 3px; border-radius: 2px; background: currentColor;
+  animation: none;
+}
+.music-btn.playing .bar { animation: barBounce 0.8s ease-in-out infinite alternate; }
+.music-btn.playing .bar:nth-child(2) { animation-delay: 0.15s; }
+.music-btn.playing .bar:nth-child(3) { animation-delay: 0.3s; }
+.music-btn .bar:nth-child(1) { height: 8px; }
+.music-btn .bar:nth-child(2) { height: 14px; }
+.music-btn .bar:nth-child(3) { height: 10px; }
+@keyframes barBounce {
+  from { transform: scaleY(0.4); }
+  to   { transform: scaleY(1); }
+}
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(42,26,31,0.5); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--cream); border-radius: 1.25rem; width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; padding: 2rem; position: relative; transform: translateY(28px) scale(0.97); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); scrollbar-width: thin; }
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+.modal-close { position: absolute; top: 1.1rem; right: 1.1rem; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--muted); transition: background 0.15s; }
+.modal-close:hover { background: var(--rose-light); color: var(--rose); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; margin-bottom: 0.25rem; padding-right: 2rem; }
+.modal-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 1.5rem; }
+
+/* PRIZE WHEEL */
+.wheel-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; }
+.wheel-outer { position: relative; width: 220px; height: 220px; }
+.wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 22px solid var(--rose); z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+#prizeCanvas { border-radius: 50%; box-shadow: 0 4px 24px rgba(0,0,0,0.15); display: block; }
+.spin-btn { font-family: 'Sarabun', sans-serif; font-size: 0.95rem; font-weight: 500; padding: 0.8rem 2.5rem; background: var(--rose); color: white; border: none; border-radius: 2rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+.spin-btn:hover { background: #a33a50; }
+.spin-btn:active { transform: scale(0.97); }
+.spin-btn:disabled { background: #ccc; cursor: default; }
+.prize-result { text-align: center; padding: 1rem 1.25rem; background: white; border: 1px solid var(--border); border-radius: 0.75rem; display: none; }
+.prize-result.show { display: block; animation: fadeUp 0.4s ease; }
+.prize-result-emoji { font-size: 2rem; display: block; margin-bottom: 0.35rem; }
+.prize-result-text { font-size: 1rem; font-weight: 500; }
+
+/* LOVE LIST */
+.love-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.love-tab { flex: 1; padding: 0.6rem; border-radius: 0.6rem; border: 1px solid var(--border); background: white; font-family: 'Sarabun', sans-serif; font-size: 0.85rem; cursor: pointer; font-weight: 500; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.love-tab.active-like { background: #fdf0f2; border-color: var(--rose); color: var(--rose); }
+.love-tab.active-dislike { background: #f0f4ff; border-color: #4a6fa5; color: #4a6fa5; }
+.love-items { display: flex; flex-direction: column; gap: 0.65rem; }
+.love-item { display: flex; align-items: center; gap: 0.85rem; background: white; border: 1px solid var(--border); border-radius: 0.65rem; padding: 0.85rem 1rem; opacity: 0; transform: translateX(-12px); animation: slideIn 0.35s ease forwards; }
+@keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+.love-icon { font-size: 1.4rem; flex-shrink: 0; width: 2rem; text-align: center; }
+.love-text strong { display: block; font-weight: 500; font-size: 0.92rem; }
+.love-text span { font-size: 0.78rem; color: var(--muted); }
+
+/* COUNTDOWN */
+.countdown-section { background: var(--rose); color: white; padding: 4rem 2rem; text-align: center; }
+.countdown-inner { max-width: 700px; margin: 0 auto; }
+.countdown-label { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 500; margin-bottom: 0.75rem; }
+.countdown-title { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 400; margin-bottom: 2.5rem; color: white; }
+.countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 480px; margin: 0 auto; }
+.cd-card { background: rgba(255,255,255,0.15); border-radius: 0.85rem; padding: 1.2rem 0.5rem; backdrop-filter: blur(4px); }
+.cd-num { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 3rem); font-weight: 700; line-height: 1; }
+.cd-unit { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-top: 0.3rem; }
+
+/* BUCKET LIST */
+.bucket-section { padding: 5rem 2rem; background: var(--cream); }
+.bucket-inner { max-width: 700px; margin: 0 auto; }
+.bucket-progress { margin-bottom: 2rem; }
+.bucket-progress-bar-wrap { height: 6px; background: var(--rose-light); border-radius: 3px; margin-top: 0.5rem; overflow: hidden; }
+.bucket-progress-bar { height: 100%; background: var(--rose); border-radius: 3px; transition: width 0.5s ease; }
+.bucket-progress-text { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
+.bucket-grid { display: flex; flex-direction: column; gap: 0.65rem; }
+.bucket-item {
+  display: flex; align-items: center; gap: 1rem;
+  background: white; border: 1px solid var(--border); border-radius: 0.75rem;
+  padding: 1rem 1.25rem; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  user-select: none;
+  opacity: 0; transform: translateX(-16px);
+  animation: slideInL 0.4s ease forwards;
+}
+@keyframes slideInL { to { opacity:1; transform:translateX(0); } }
+.bucket-item:hover { transform: translateX(3px); }
+.bucket-item.done { background: #f5fdf5; border-color: #6dbb8a; }
+.bucket-check {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; transition: background 0.2s, border-color 0.2s;
+}
+.bucket-item.done .bucket-check { background: #6dbb8a; border-color: #6dbb8a; color: white; }
+.bucket-icon { font-size: 1.3rem; flex-shrink: 0; }
+.bucket-text { flex: 1; }
+.bucket-text strong { font-size: 0.95rem; font-weight: 500; display: block; }
+.bucket-text span { font-size: 0.78rem; color: var(--muted); }
+.bucket-item.done .bucket-text strong { text-decoration: line-through; color: var(--muted); }
+
+/* QUIZ MODAL */
+.quiz-progress { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; }
+.quiz-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+.quiz-dot.active { background: var(--rose); }
+.quiz-dot.done { background: #6dbb8a; }
+.quiz-question { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 1.25rem; line-height: 1.5; min-height: 3.5rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+.quiz-option {
+  padding: 0.85rem 1.1rem; border: 1px solid var(--border); border-radius: 0.65rem;
+  background: white; font-family: 'Sarabun', sans-serif; font-size: 0.92rem;
+  cursor: pointer; text-align: left; transition: background 0.15s, border-color 0.15s;
+}
+.quiz-option:hover:not(:disabled) { background: var(--rose-light); border-color: var(--rose); }
+.quiz-option.correct { background: #f0fdf4; border-color: #6dbb8a; color: #1a6644; font-weight: 500; }
+.quiz-option.wrong { background: #fff0f2; border-color: #e07080; color: #8a1a2a; }
+.quiz-option:disabled { cursor: default; }
+.quiz-result { text-align: center; padding: 1rem 0; }
+.quiz-score-big { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; color: var(--rose); line-height: 1; }
+.quiz-score-label { font-size: 0.9rem; color: var(--muted); margin-top: 0.25rem; margin-bottom: 1rem; }
+.quiz-verdict { font-size: 1rem; line-height: 1.6; padding: 1rem; background: var(--rose-light); border-radius: 0.75rem; margin-bottom: 1.25rem; }
+.quiz-restart { font-family: 'Sarabun', sans-serif; font-size: 0.9rem; font-weight: 500; padding: 0.75rem 2rem; background: var(--rose); color: white; border: none; border-radius: 2rem; cursor: pointer; }
+.quiz-restart:hover { background: #a33a50; }
+
+/* FOOTER */
+footer { background: var(--dark); color: rgba(250,247,242,0.4); text-align: center; padding: 2.5rem 2rem; font-size: 0.8rem; letter-spacing: 0.05em; }
+footer strong { color: var(--rose); font-weight: 400; }
+
+@media (max-width: 500px) {
+  .float-btns { bottom: 1.25rem; right: 1.25rem; }
+  .float-btn { font-size: 0.8rem; padding: 0.65rem 1rem; }
+  .countdown-grid { gap: 0.65rem; }
+  .music-btn { bottom: 1.25rem; left: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="petals" id="petals"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="position:relative;z-index:1">
+    <div class="badge">✦ Anniversary ✦</div>
+    <div class="big-number">1<span>ปี</span></div>
+    <h1 class="hero-title">ครบรอบ <em>1 ปีของเค้ากับเธอ</em></h1>
+    <p class="hero-sub">วันนี้เราเดินมาพร้อมกันครบหนึ่งปีแล้ว — ขอบคุณทุกช่วงเวลา</p>
+    <div class="scroll-hint">
+      <span></span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section">
+  <p class="section-label">ย้อนรอย</p>
+  <h2 class="section-title">หนึ่งปีที่ผ่านมา</h2>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 0</p><p class="tl-text">เธอกลับมาคุยกับเค้า</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 1</p><p class="tl-text">ได้คุยกันบ้าง ทักไปกวนบ้าง แต่ก็เล่นด้วยกัน</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 5</p><p class="tl-text">วันเกิดเธอเค้าได้เริ่มทำเว็บให้ เป็นครั้งแรก</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 7</p><p class="tl-text">เค้าเริ่มวางแพลนปีหน้าแล้วก็ได้ทำเว็บเคาท์ดาวให้เธอ</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 9</p><p class="tl-text">วาเลนไทน์ที่ผ่านมามีความสุขมากนะที่ได้ใช้ร่วมกับเธอ เค้าอยากซื้อดอกไม้ให้เเต่กลัวเธอไม่ชอบ</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 10</p><p class="tl-text">เป็นเดือนที่เค้าอยู่กับเธอมากที่สุดแล้วก็เป็นเดือนที่เค้ารู้สึกกลัวที่สุดเหมือนกัน</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><p class="tl-month">เดือนที่ 11</p><p class="tl-text">แต่เราก็ผ่านกันมาด้วยกันได้ เดือนนี้มีหลายเรื่องที่เค้ารู้สึกน้อยใจ นั่งนอนคิดกับตัวเองหลายเรื่อง แต่ก็ผ่านด้วยกันมาด้วยกัน</p></div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--gold);box-shadow:0 0 0 2px var(--gold)"></div>
+      <p class="tl-month" style="color:var(--rose)">ครบ1ปี </p>
+      <p class="tl-text">วันนี้ เป็นวันที่เรากลับมาคุยกันแล้วเย้ ขนาดเป็นวันแบบนี้เค้ายังนอยเลย เราผ่านอะไรกันมาตั้งเยอะนะทั้งเรื่องดีหรือไม่ดี แต่ก็อยากอยู่ต่อไปอีกเรื่อยๆเลยเธอจะอยากอยู่ด้วยมั้ยอะสิ (เบื่อเค้ายังงง)</p>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTER -->
+<section class="counter-section">
+  <div style="max-width:700px;margin:0 auto">
+    <p class="section-label" style="color:rgba(250,247,242,0.4)"></p>
+    <h2 class="section-title" style="color:var(--cream)">ครบรอบ1ปี</h2>
+    <div class="counter-grid">
+      <div class="counter-card"><div class="counter-num" data-target="365">0</div><div class="counter-label">วัน</div></div>
+      <div class="counter-card" style="transition-delay:.1s"><div class="counter-num" data-target="8760">0</div><div class="counter-label">ชั่วโมง</div></div>
+      <div class="counter-card" style="transition-delay:.2s"><div class="counter-num" data-target="52">0</div><div class="counter-label">สัปดาห์</div></div>
+      <div class="counter-card" style="transition-delay:.3s"><div class="counter-num" data-target="12">0</div><div class="counter-label">เดือน</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <p class="section-label">ข้อความถึงเธอจากเค้า</p>
+    <h2 class="section-title">ข้อความถึงเธอ</h2>
+    <div class="wishes-grid" id="wishesGrid"></div>
+  </div>
+</section>
+
+<section class="countdown-section">
+  <div class="countdown-inner">
+    <p class="countdown-label">เดินหน้าต่อไป</p>
+    <h2 class="countdown-title">นับถอยหลังสู่ปีที่2</h2>
+    <div class="countdown-grid">
+      <div class="cd-card"><div class="cd-num" id="cdDays">--</div><div class="cd-unit">วัน</div></div>
+      <div class="cd-card"><div class="cd-num" id="cdHours">--</div><div class="cd-unit">ชั่วโมง</div></div>
+      <div class="cd-card"><div class="cd-num" id="cdMins">--</div><div class="cd-unit">นาที</div></div>
+      <div class="cd-card"><div class="cd-num" id="cdSecs">--</div><div class="cd-unit">วินาที</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="bucket-section">
+  <div class="bucket-inner">
+    <p class="section-label">สิ่งที่อยากทำด้วยกัน</p>
+    <h2 class="section-title">Bucket list</h2>
+    <div class="bucket-progress">
+      <div class="bucket-progress-bar-wrap"><div class="bucket-progress-bar" id="bucketBar" style="width:0%"></div></div>
+      <div class="bucket-progress-text" id="bucketText">ทำแล้ว 0 จาก 8 รายการ</div>
+    </div>
+    <div class="bucket-grid" id="bucketGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <p>-ขอบคุณนะ &nbsp;✦&nbsp; ครบรอบ <strong>1 ปี</strong></p>
+</footer>
+
+<!-- MUSIC BUTTON -->
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="เปิด/ปิดเพลง">
+  <div class="music-bars">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+</button>
+
+<!-- FLOATING BUTTONS -->
+<div class="float-btns">
+  <button class="float-btn float-btn-prize" onclick="openModal('prizeModal')"> สุ่มของรางวัล</button>
+  <button class="float-btn float-btn-love" onclick="openModal('loveModal')"> ชอบ / ไม่ชอบ</button>
+  <button class="float-btn" style="background:var(--dark);color:white;" onclick="openModal('quizModal')">ทดสอบความรู้จัก</button>
+</div>
+
+<!-- QUIZ MODAL -->
+<div class="modal-overlay" id="quizModal" onclick="closeOnOverlay(event,'quizModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('quizModal')">✕</button>
+    <h2 class="modal-title">รู้จักกันแค่ไหน</h2>
+    <p class="modal-sub">ตอบให้ครบ 5 ข้อ</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="prizeModal" onclick="closeOnOverlay(event,'prizeModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('prizeModal')">✕</button>
+    <h2 class="modal-title">สุ่มของรางวัล</h2>
+    <p class="modal-sub">หมุนวงล้อแล้วดูว่าคืนนี้จะได้ทำอะไร</p>
+    <div class="wheel-wrap">
+      <div class="wheel-outer">
+        <div class="wheel-pointer"></div>
+        <canvas id="prizeCanvas" width="220" height="220"></canvas>
+      </div>
+      <button class="spin-btn" id="spinBtn" onclick="spinWheel()"> หมุนเลย!</button>
+    </div>
+    <div class="prize-result" id="prizeResult">
+      <span class="prize-result-emoji" id="prizeEmoji"></span>
+      <span class="prize-result-text" id="prizeText"></span>
+    </div>
+  </div>
+</div>
+
+<!-- LOVE MODAL -->
+<div class="modal-overlay" id="loveModal" onclick="closeOnOverlay(event,'loveModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loveModal')">✕</button>
+    <h2 class="modal-title">ชอบ / ไม่ชอบ</h2>
+    <p class="modal-sub">รู้จักกันมา1ปีเค้ารู้อะไรบ้าง</p>
+    <div class="love-tabs">
+      <button class="love-tab active-like" id="tabLike" onclick="switchTab('like')"> สิ่งที่ชอบ</button>
+      <button class="love-tab" id="tabDislike" onclick="switchTab('dislike')"> สิ่งที่ไม่ชอบ</button>
+    </div>
+    <div class="love-items" id="loveItems"></div>
+  </div>
+</div>
+
+<script>
+// PETALS
+(function(){
+  const colors=['#e8a0b0','#f5c9d4','#d4a0a8','#f0d0b8','#e8c0a0'];
+  const c=document.getElementById('petals');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div'); p.className='petal';
+    p.style.cssText=`left:${Math.random()*100}%;top:${-Math.random()*20}%;background:${colors[i%colors.length]};width:${6+Math.random()*8}px;height:${8+Math.random()*10}px;animation-duration:${6+Math.random()*8}s;animation-delay:${Math.random()*8}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// SCROLL REVEAL
+const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.12});
+document.querySelectorAll('.tl-item,.counter-card').forEach(el=>observer.observe(el));
+
+// COUNTER
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    entry.target.querySelectorAll('.counter-num').forEach(el=>{
+      const target=+el.dataset.target,dur=1500,start=performance.now();
+      function tick(now){
+        const p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,3);
+        el.textContent=Math.round(ease*target).toLocaleString();
+        if(p<1)requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+    cObs.disconnect();
+  });
+},{threshold:0.3});
+cObs.observe(document.querySelector('.counter-section'));
+
+// WISHES
+const wishesData=[
+  {emoji:'🎉',text:'ขอแสดงความยินดีกับครบรอบ1ปี ขอให้มีความสุขในวันนี้แล้วก็วันต่อๆไปนะ',from:'ภู',relation:'ตอนนี้'},
+  {emoji:'❤️',text:'ขอบคุณช่วงเวลาที่ผ่านมานะไม่ว่าจะดีหรือร้าย แต่ก็มีความสุขนะจนถึงตอนนี้',from:'ภู',relation:'เพื่อน'},
+  {emoji:'🥂',text:'เค้าอยากดูแลเธอ ในทุกๆอย่างไม่ว่าเรื่องไหน ขอให้เค้าได้ดูแลเธอนะ',from:'ภู',relation:'คนที่ชอบเธอ'},
+  {emoji:'🎮',text:'คนนี้เล่นเกมด้วยสนุก อยากเล่นด้วยอีกแต่คิวเยอะม้าก เล่นซัพก็เก่ง โรบอคก็เก่ง',from:'yu',relation:'เพื่อนเล่นเกม'},
+  {emoji:'✨',text:'ขอให้เข้ามหาลัยที่ต้องการได้นะ เค้าเป็นกำลังใจให้เสมอ อย่าลืมว่ามีเค้าอยู่ตรงนี้นะ',from:'ภู',relation:'เพื่อน'},
+  {emoji:'🎬',text:'ดูหนังด้วยกันสนุกมาก ที่ทำให้รู้จักหนังรอมคอม หนังเรื่องต่างๆ ขอบคุณน้า',from:'ภู',relation:'เพื่อนดูหนัง'},
+  {emoji:'💻',text:'เขียนโค้ดอันนี้ให้รู้มั้ยเค้าใช้เวลามานานมาก เค้าต้องมั่นใจว่าเธอจะชอบมันจริงๆ แล้วก้ขอบคุณนะที่ทำให้เขียนสิ่งที่มีความสุขอันนี้ขึ้นมา',from:'ภู',relation:'คนที่เก่งโค้ด'},
+  {emoji:'🌸',text:'เค้ามีความสุขมากเลยที่มีเธอในทุกๆวันที่เค้าตื่นมา แม้เค้าจะนอยเธอบ่อยหรืองอนเธอบ่อยก็ก็ยังไม่รำคาญเค้าหรือเธอรำคาญแต่ไม่พูดก็เถอะ ',from:'เค้า',relation:'...'},
+  {emoji:'🥹',text:'ผ่านมา1ปีแล้ว ยังจำวันที่เธอกลับมาคุยกันได้มั้ย ขอบคุณที่ยอมกลับมาคุยกันนะ เค้ายังไม่รู้เลยถ้าไม่มีเธอเค้าจะเป็นยังไงตอนนี้',from:'pt_qter',relation:'เพื่อน'},
+];
+
+(function(){
+  const grid=document.getElementById('wishesGrid');
+  const wObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  wishesData.forEach((w,i)=>{
+    const d=document.createElement('div');
+    d.className='wish-card';
+    d.style.transitionDelay=(i*0.09)+'s';
+    d.innerHTML=`<span class="wish-emoji">${w.emoji}</span><p class="wish-text">${w.text}</p><div class="wish-from"><div class="wish-avatar">${w.from.slice(0,2)}</div><div class="wish-name">${w.from}</div><div class="wish-relation">${w.relation}</div></div>`;
+    grid.appendChild(d);
+    wObs.observe(d);
+  });
+})();
+
+// MODAL
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+  if(id==='quizModal'){ quizCurrent=0; quizScore=0; quizAnswered=false; renderQuizQuestion(); }
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function closeOnOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});});
+
+// PRIZE WHEEL
+const prizes=[
+  {label:'ดูหนังพิเศษ1เรื่องไม่เกี่ยงราคา',emoji:'🎬',color:'#f2b8c4'},
+  {label:'โชคร้าย ต้องตามใจเค้าวันนี้',emoji:'😈',color:'#f5d4a0'},
+  {label:'ไปเดินเที่ยวเล่นที่สวน',emoji:'🚶',color:'#a8d4f0'},
+  {label:'เดี๋ยวนวดให้',emoji:'💆',color:'#b0e8b0'},
+  {label:'ของขวัญ secert2',emoji:'🎁',color:'#d0b0e8'},
+  {label:'เดะเติมเกมให้',emoji:'🎮',color:'#e8d890'},
+  {label:'เดี๋ยวเค้าพาเที่ยวที่ไหนก็ได้',emoji:'✈️',color:'#90e8d8'},
+  {label:'บัตรกินอะไรก็ได้ตามใจ1วัน',emoji:'🍰',color:'#f0b8c8'},
+];
+const canvas=document.getElementById('prizeCanvas');
+const ctx=canvas.getContext('2d');
+let spinning=false, currentAngle=-Math.PI/2;
+
+function drawWheel(angle){
+  const cx=110,cy=110,r=104,n=prizes.length,arc=2*Math.PI/n;
+  ctx.clearRect(0,0,220,220);
+  prizes.forEach((p,i)=>{
+    const start=angle+i*arc, end=start+arc;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
+    ctx.fillStyle=p.color; ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(start+arc/2);
+    ctx.textAlign='right';
+    ctx.font='500 11px Sarabun,sans-serif'; ctx.fillStyle='#2a1a1f';
+    ctx.fillText(p.label, r-8, 5);
+    ctx.font='13px serif'; ctx.fillText(p.emoji, r-8, -7);
+    ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,16,0,2*Math.PI);
+  ctx.fillStyle='white'; ctx.fill(); ctx.strokeStyle='#b5445a'; ctx.lineWidth=2.5; ctx.stroke();
+}
+drawWheel(currentAngle);
+
+function spinWheel(){
+  if(spinning)return;
+  spinning=true;
+  document.getElementById('spinBtn').disabled=true;
+  document.getElementById('prizeResult').classList.remove('show');
+  const totalRot=(6+Math.floor(Math.random()*5))*2*Math.PI + Math.random()*2*Math.PI;
+  const dur=4200, startTime=performance.now(), startAngle=currentAngle;
+  function animate(now){
+    const t=Math.min((now-startTime)/dur,1);
+    const ease=t<1 ? 1-Math.pow(1-t,4) : 1;
+    currentAngle=startAngle+totalRot*ease;
+    drawWheel(currentAngle);
+    if(t<1){ requestAnimationFrame(animate); return; }
+    spinning=false;
+    document.getElementById('spinBtn').disabled=false;
+    const n=prizes.length, arc=2*Math.PI/n;
+    const norm=(((-currentAngle % (2*Math.PI)) + 2*Math.PI + Math.PI/2) % (2*Math.PI));
+    const idx=Math.floor(norm/arc) % n;
+    const prize=prizes[idx];
+    document.getElementById('prizeEmoji').textContent=prize.emoji;
+    document.getElementById('prizeText').textContent='คุณได้รับ "' + prize.label + '"!';
+    document.getElementById('prizeResult').classList.add('show');
+  }
+  requestAnimationFrame(animate);
+}
+
+// LOVE LIST
+const loveData={
+  like:[
+    {icon:'💤',name:'นอน',desc:'เธอชอบนอน'},
+    {icon:'🥀',name:'ดอกไม้',desc:'เธอชอบดอกไม้มาก อาจจะเพราะมันสวยและหอม'},
+    {icon:'📚',name:'อ่านฟิค',desc:'หาเรื่องดูแล้วก็ชอบสะด้วย'},
+    {icon:'🥘',name:'ของกิน',desc:'เธอชอบกินมาก การกินทำให้เธอมีความสุข'},
+    {icon:'🎥',name:'ดูหนัง',desc:'เธอชอบดูหนังมาก เป็นคนเเนะนำหนังให้เค้าดูด้วย'},
+    {icon:'😺',name:'สัตว์',desc:'สัตว์ที่เธอชอบก็จะมี ช้าง แมว กระต่าย ตอนนี้เค้าชัวร์แค่นี้'},
+    {icon:'🎵',name:'ฟังเพลง',desc:'เธอชอบฟังเพลงเเจสกับสากล'},
+    {icon:'👥',name:'อยู่กับเพื่อน',desc:'เธอชอบอยุ่กับเพื่อนมากกว่าอยู่กับเค้าอันนี้จริงมั้ยครับ'},
+    {icon:'💃',name:'เต้น',desc:'เธอชอบในการเต้นตั้งแต่เด็กเเล้ว'},
+  ],
+  dislike:[
+    {icon:'⏰',name:'ตื่นเช้า',desc:'ขอนอนอีกแค่ 5 นาทีได้มั้ย'},
+    {icon:'😣',name:'คนไม่ฟัง',desc:'เธอจะไม่ชอบอันนี้มาก เค้าอยู่กับเธอฟังเธอเอง'},
+    {icon:'📞',name:'โทรแล้วไม่รับ',desc:'เธอจะเซ็งไม่ว่าจะเป็นเค้าหรือคนอื่น'},
+    {icon:'🌡️',name:'อากาศร้อนจัด',desc:'ถ้าอากาศร้อนเธอก็จะหงุดหงิดง่าย'},
+    {icon:'🌧️',name:'วันที่ฝนตก',desc:'เพราะถ้าฝนตกจะมีแมลงอยู่แถวนั้น'},
+    {icon:'🐛',name:'แมลง',desc:'เธอไม่ชอบแมลงเพราะมันน่ากลัว เดะเค้าไล่ไปให้เอง'},
+    {icon:'✨',name:'เครื่องประดับ',desc:'เธอบอกว่าถ้าใส่แล้วมันจะแปลกๆ'},
+  ]
+};
+let activeTab='like';
+function switchTab(t){
+  activeTab=t;
+  document.getElementById('tabLike').className='love-tab'+(t==='like'?' active-like':'');
+  document.getElementById('tabDislike').className='love-tab'+(t==='dislike'?' active-dislike':'');
+  renderLove();
+}
+function renderLove(){
+  document.getElementById('loveItems').innerHTML=loveData[activeTab].map((it,i)=>`
+    <div class="love-item" style="animation-delay:${i*0.06}s">
+      <div class="love-icon">${it.icon}</div>
+      <div class="love-text"><strong>${it.name}</strong><span>${it.desc}</span></div>
+    </div>`).join('');
+}
+renderLove();
+
+// COUNTDOWN
+const nextAnniversary = new Date('2027-05-03T00:00:00');
+function updateCountdown(){
+  const diff = nextAnniversary - new Date();
+  if(diff <= 0){
+    ['cdDays','cdHours','cdMins','cdSecs'].forEach(id=>document.getElementById(id).textContent='00');
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('cdDays').textContent=String(d).padStart(2,'0');
+  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// BUCKET LIST — save ด้วย localStorage
+const BUCKET_KEY = 'anniversary_bucket_v1';
+const bucketItems=[
+  {icon:'✨', name:'เป็นคนสำคัญของเธอ', desc:'ก็อยากเห็นหนิ'},
+  {icon:'📷', name:'ถ่ายรููปให้กัน', desc:'แล้วแลกรูปกัน'},
+  {icon:'🎡', name:'ไปสวนสนุกด้วยกัน', desc:'ตะโกนบนเครื่องเล่นให้สุดเสียง'},
+  {icon:'🌄', name:'เค้าอยู่หอกับเธอ', desc:'ตื่นมาจะได้เห็นหน้าเธอคนแรก'},
+  {icon:'🎬', name:'ดูหนังในโรง', desc:'พร้อมป๊อปคอร์น'},
+  {icon:'🍳', name:'ทำอาหารให้เธอกิน', desc:'เมนูโปรดของเธอ'},
+  {icon:'🌃', name:'ไปเที่ยวไกลๆด้วยกัน', desc:'อยากไปเที่ยวไกลๆกับเธอคนแรก'},
+  {icon:'⭐', name:'เคาท์ดาวท์ปีใหม่', desc:'เริ่มต้นปีใหม่กับเธออีกปี'},
+];
+
+// โหลด done state จาก localStorage
+(function(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(BUCKET_KEY) || '[]');
+    saved.forEach((done, i) => { if(bucketItems[i]) bucketItems[i].done = !!done; });
+  } catch(e) {}
+})();
+
+function saveBucket(){
+  try {
+    localStorage.setItem(BUCKET_KEY, JSON.stringify(bucketItems.map(x=>x.done)));
+  } catch(e) {}
+}
+
+function renderBucket(){
+  const grid=document.getElementById('bucketGrid');
+  const doneCnt=bucketItems.filter(x=>x.done).length;
+  const pct=Math.round(doneCnt/bucketItems.length*100);
+  document.getElementById('bucketBar').style.width=pct+'%';
+  document.getElementById('bucketText').textContent=`ทำแล้ว ${doneCnt} จาก ${bucketItems.length} รายการ (${pct}%)`;
+  grid.innerHTML=bucketItems.map((it,i)=>`
+    <div class="bucket-item${it.done?' done':''}" onclick="toggleBucket(${i})" style="animation-delay:${i*0.05}s">
+      <div class="bucket-check">${it.done?'✓':''}</div>
+      <div class="bucket-icon">${it.icon}</div>
+      <div class="bucket-text"><strong>${it.name}</strong><span>${it.desc}</span></div>
+    </div>`).join('');
+  grid.querySelectorAll('.bucket-item').forEach(el=>{
+    if(el.getBoundingClientRect().top < window.innerHeight) el.style.opacity='1', el.style.transform='none';
+  });
+}
+
+function toggleBucket(i){
+  bucketItems[i].done=!bucketItems[i].done;
+  saveBucket(); // บันทึกทันทีที่กด
+  renderBucket();
+}
+renderBucket();
+
+// QUIZ
+const quizData=[
+  {q:'เค้าชอบเครื่องดื่มอะไร', opts:['ชานมไข่มุก','ชาเขียว','น้ำเปล่า','โกโก้'], ans:1},
+  {q:'ถ้ามีวันหยุด3วัน เค้าอยากทำอะไรมากที่สุด', opts:['นอนเฉยๆ','ออกเที่ยว','เล่นเกม','อยู่กับเธอ'], ans:3},
+  {q:'สิ่งที่เค้าขาดไม่ได้คืออะไร', opts:['พวงกุญแจ','โทรศัพท์','เงิน','เธอ'], ans:3},
+  {q:'เค้าชอบฟังเพลงแนวไหนที่สุด', opts:['เพลงpop','เพลงเนื้อหาดีๆ','เพลงรัก','เพลงเศร้า','เพลงLofi'], ans:1},
+  {q:'อาหารที่เค้าชอบ', opts:['ข้าวไข่ข้น','กระเพรา','หมูปิ้ง','พิซซ่า','อะไรก็ได้'], ans:0},
+];
+let quizCurrent=0, quizScore=0, quizAnswered=false;
+
+function renderQuizProgress(){
+  document.getElementById('quizProgress').innerHTML=quizData.map((_,i)=>`
+    <div class="quiz-dot${i<quizCurrent?' done':i===quizCurrent?' active':''}"></div>`).join('');
+}
+function renderQuizQuestion(){
+  quizAnswered=false;
+  const q=quizData[quizCurrent];
+  renderQuizProgress();
+  document.getElementById('quizBody').innerHTML=`
+    <div class="quiz-question">${quizCurrent+1}. ${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o,i)=>`<button class="quiz-option" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+    </div>`;
+}
+function answerQuiz(i){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizData[quizCurrent];
+  const btns=document.querySelectorAll('.quiz-option');
+  btns.forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===q.ans) b.classList.add('correct');
+    else if(idx===i && i!==q.ans) b.classList.add('wrong');
+  });
+  if(i===q.ans) quizScore++;
+  setTimeout(()=>{
+    quizCurrent++;
+    if(quizCurrent<quizData.length){ renderQuizQuestion(); }
+    else { showQuizResult(); }
+  }, 900);
+}
+function showQuizResult(){
+  renderQuizProgress();
+  const verdicts=[
+    {min:0,max:1, emoji:'🥹', text:'งอม'},
+    {min:2,max:3, emoji:'😊', text:'เธอก็สนใจเค้านะเนี่ย ดีใจและ'},
+    {min:4,max:4, emoji:'🥰', text:'เกือบแล้ว เก่งแล้วครับ'},
+    {min:5,max:5, emoji:'🏆', text:'เธอจำได้เก่งจัง งี้ต้องมีรางวัลให้'},
+  ];
+  const v=verdicts.find(x=>quizScore>=x.min&&quizScore<=x.max);
+  document.getElementById('quizBody').innerHTML=`
+    <div class="quiz-result">
+      <div style="font-size:3rem;margin-bottom:0.5rem">${v.emoji}</div>
+      <div class="quiz-score-big">${quizScore}/${quizData.length}</div>
+      <div class="quiz-score-label">คะแนนที่ได้</div>
+      <div class="quiz-verdict">${v.text}</div>
+      <button class="quiz-restart" onclick="restartQuiz()">🔄 เล่นอีกครั้ง</button>
+    </div>`;
+}
+function restartQuiz(){ quizCurrent=0; quizScore=0; quizAnswered=false; renderQuizQuestion(); }
+
+// MUSIC — ใช้ Web Audio API สร้างเพลง Lo-fi เบาๆ ไม่ต้องโหลดไฟล์
+let audioCtx = null;
+let musicNodes = [];
+let isPlaying = false;
+
+function createLofiMusic(){
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const master = audioCtx.createGain();
+  master.gain.setValueAtTime(0.18, audioCtx.currentTime);
+  master.connect(audioCtx.destination);
+
+  // Chord progression: Am - F - C - G (เป็นวนรอบ)
+  const chords = [
+    [220.00, 261.63, 329.63], // Am
+    [174.61, 220.00, 261.63], // F
+    [261.63, 329.63, 392.00], // C
+    [196.00, 246.94, 293.66], // G
+  ];
+
+  let chordIdx = 0;
+  let chordOscillators = [];
+
+  function playChord(){
+    // หยุดอันเก่า
+    chordOscillators.forEach(o=>{ try{ o.stop(); }catch(e){} });
+    chordOscillators = [];
+
+    const chord = chords[chordIdx % chords.length];
+    chord.forEach(freq => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(0, audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 0.3);
+      g.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 1.5);
+      g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3.8);
+      osc.connect(g); g.connect(master);
+      osc.start(); osc.stop(audioCtx.currentTime + 4);
+      chordOscillators.push(osc);
+    });
+
+    chordIdx++;
+    musicNodes.chordTimer = setTimeout(playChord, 3800);
+  }
+
+  // Soft hi-hat pulse
+  function playHihat(){
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.05, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for(let i=0; i<data.length; i++) data[i] = (Math.random()*2-1) * (1 - i/data.length);
+    const src = audioCtx.createBufferSource();
+    const g = audioCtx.createGain();
+    src.buffer = buf;
+    g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    src.connect(g); g.connect(master);
+    src.start();
+    musicNodes.hatTimer = setTimeout(playHihat, 480 + Math.random()*40);
+  }
+
+  musicNodes = { chordTimer: null, hatTimer: null };
+  playChord();
+  setTimeout(playHihat, 400);
+}
+
+function stopLofiMusic(){
+  if(musicNodes.chordTimer) clearTimeout(musicNodes.chordTimer);
+  if(musicNodes.hatTimer) clearTimeout(musicNodes.hatTimer);
+  if(audioCtx){
+    try{ audioCtx.close(); }catch(e){}
+    audioCtx = null;
+  }
+  musicNodes = [];
+}
+
+function toggleMusic(){
+  const btn = document.getElementById('musicBtn');
+  if(isPlaying){
+    stopLofiMusic();
+    isPlaying = false;
+    btn.classList.remove('playing');
+    btn.title = 'เปิดเพลง';
+  } else {
+    createLofiMusic();
+    isPlaying = true;
+    btn.classList.add('playing');
+    btn.title = 'ปิดเพลง';
+  }
+}
+</script>
+</body>
+</html>
